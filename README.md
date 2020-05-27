@@ -39,3 +39,7 @@ This project uses [Make](https://www.gnu.org/software/make/). The Makefile has f
 5. Implement the `System`, `Process`, and `Processor` classes, as well as functions within the `LinuxParser` namespace.
 
 6. Submit!
+## Docker 
+This repo includes Dockerfile used for this project, to build/run from within a container follow these steps.
+1. docker build . --no-cache -t sysmonitor:latest
+2. docker run -it sysmonitor:latest
