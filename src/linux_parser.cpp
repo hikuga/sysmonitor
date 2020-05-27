@@ -69,25 +69,7 @@ vector<int> LinuxParser::Pids2() {
 }
 
 // BONUS: Update this to use std::filesystem
-vector<int> LinuxParser::Pids() {
-  return Pids2();
-  vector<int> pids;
-  DIR* directory = opendir(kProcDirectory.c_str());
-  struct dirent* file;
-  while ((file = readdir(directory)) != nullptr) {
-    // Is this a directory?
-    if (file->d_type == DT_DIR) {
-      // Is every character of the name a digit?
-      string filename(file->d_name);
-      if (std::all_of(filename.begin(), filename.end(), isdigit)) {
-        int pid = stoi(filename);
-        pids.push_back(pid);
-      }
-    }
-  }
-  closedir(directory);
-  return pids;
-}
+// Pids2
 
 // TODO: Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() { return 0.0; }
@@ -134,10 +116,7 @@ string LinuxParser::Command(int pid) {
     return (res.size()) ? res[0] : "unknown cmd";
 }
 
-// TODO: Read and return the memory used by a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Ram(int pid) {
-    return string(); }
+
 
 // TODO: Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
@@ -199,6 +178,8 @@ std::vector<std::string> LinuxParser::extract_p(std::string path, std::string pa
     return results;
 }
 
+
+/*
 std::string LinuxParser::extract(std::string path, std::string pattern){
   std::string extracted;
   std::ifstream f(path, std::ios::in | std::ios::binary);
@@ -221,3 +202,4 @@ std::string LinuxParser::extract(std::string path, std::string pattern){
   }
   return extracted;
 }
+ */

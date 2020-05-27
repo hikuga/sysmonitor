@@ -9,7 +9,7 @@ using std::vector;
 
 // TODO: Return the aggregate CPU utilization
 float Processor::Utilization() {
-    //return 0.2;
+
     std::string cpu_pattern{"cpu\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)"};
     std::vector<std::string> extracted_vals = LinuxParser::extract_p( std::string{"/proc/stat"}, cpu_pattern);
     std::vector<long> curr_(extracted_vals.size(),0);

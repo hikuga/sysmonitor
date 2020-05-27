@@ -10,8 +10,11 @@ using std::to_string;
 // OUTPUT: HH:MM:SS
 // REMOVE: [[maybe_unused]] once you define the function
 string Format::ElapsedTime(long seconds) {
+    //TODO really there's no library call for this? strftime
      int hh = seconds / 360;
      int mm = (seconds - hh * 360) / 60;
      int ss = (seconds - hh * 360 - mm * 60);
-    return string{to_string(hh)+":"+to_string(mm)+":"+to_string(ss)};
+    return string{ ((hh > 9) ? to_string(hh) : ("0"+to_string(hh)) )\
+               +":"+((mm > 9) ? to_string(mm) : ("0"+to_string(mm)) )\
+               +":"+((ss > 9) ? to_string(ss) : ("0"+to_string(ss)) )};
 }
