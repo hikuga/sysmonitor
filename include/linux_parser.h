@@ -18,15 +18,19 @@ const std::string kVersionFilename{"/version"};
 const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
 
+
 // System
 float MemoryUtilization();
 long UpTime();
 std::vector<int> Pids();
+std::vector<int> Pids2();
 int TotalProcesses();
 int RunningProcesses();
 std::string OperatingSystem();
 std::string Kernel();
 
+std::string extract(std::string src, std::string pattern);
+std::vector<std::string> extract_p(std::string path, std::string pattern);
 // CPU
 enum CPUStates {
   kUser_ = 0,
