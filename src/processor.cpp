@@ -20,7 +20,7 @@ float Processor::Utilization() {
         return std::strtol(elem.c_str(), &ends, 10);});
 
     float utilization = 0.0;
-    if(prev_.size() ){
+    if(prev_.size() >= 8){
      // ref. 0,user    1,nice   2,system  3,idle  4,iowait  5,irq  6,softirq  7,steal  8,guest  9,guest_nice
      /*
       * PrevIdle = previdle + previowait
@@ -60,6 +60,6 @@ float Processor::MemUsage() {
     if( mem_total.size() && mem_free.size() )
         return 1.0 - strtof(mem_free[0].c_str(), &endS) / strtof(mem_total[0].c_str(), &endS);
 
-    return 0.0;
+    return 0.12345;
 
 }

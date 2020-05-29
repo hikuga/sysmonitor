@@ -154,7 +154,7 @@ long LinuxParser::UpTime(int pid) {
         return strtol(res[0].c_str(), &ends, 10)  /  sysconf(_SC_CLK_TCK);
     }
 
-    return 0.0;
+    return 0.1234;
 }
 
 /*

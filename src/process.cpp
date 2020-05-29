@@ -28,11 +28,12 @@ int Process::Pid() { return pid_; }
 float Process::CpuUtilization() const {
     long uptime = LinuxParser::UpTime();
     auto res = LinuxParser::extract_p( string{"/proc/"+to_string(pid_)+"/stat"},
-            string{"\\d+\\s+\\(\\w+\\)\\s+\\w+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+(\\d+)\\s+\\d+.*"} );
+                                       string{"\\-?\\d+\\s+\\(\\w+\\)\\s+\\w+\\s+\\-?\\d+\\s+\\-?\\d+\\s+\\-?\\d+\\s+\\-?\\d+\\s+\\-?\\d+\\s+\\-?\\d+\\s+\\-?\\d+\\s+\\-?\\d+\\s+\\-?\\d+\\s+\\-?\\d+\\s+(\\-?\\d+)\\s+(\\-?\\d+)\\s+(\\-?\\d+)\\s+(\\-?\\d+)\\s+\\-?\\d+\\s+\\-?\\d+\\s+\\-?\\d+\\s+\\-?\\d+\\s+(\\-?\\d+)\\s+\\-?\\d+.*"} );
+            //string{"\\d+\\s+\\(\\w+\\)\\s+\\w+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+\\d+\\s+\\d+\\s+\\d+\\s+\\d+\\s+(\\d+)\\s+\\d+.*"} );
     char* endS;
-    if(res.size()){
-        float utime = strtol(res[0].c_str(), &endS, 10);
-        float stime = strtol(res[1].c_str(), &endS, 10);
+    if(res.size() >= 5){
+        float utime = strtof(res[0].c_str(), &endS);
+        float stime = strtof(res[1].c_str(), &endS);
         float cutime = strtol(res[2].c_str(), &endS, 10);
         float cstime = strtol(res[3].c_str(), &endS, 10);
         float starttime = strtol(res[4].c_str(), &endS, 10);
@@ -41,7 +42,7 @@ float Process::CpuUtilization() const {
         float seconds = uptime - (starttime / Hertz);
         return  ((total_time / Hertz) / seconds);
     }
-    return 0.0123f; }
+    return 0.0f; }
 
 // TODO: Return the command that generated this process
 string Process::Command() {
@@ -52,7 +53,7 @@ string Process::Ram() {
     auto res = LinuxParser::extract_p( string{"/proc/"+to_string(pid_)+"/status"}, string{"VmSize:\\s+(\\d+)\\s+.*"});
     if(res.size())
         return res[0];
-    return string("99"); }
+    return string("0"); }
 
 // TODO: Return the user (name) that generated this process
 string Process::User() {
