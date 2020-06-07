@@ -77,7 +77,7 @@ float LinuxParser::MemoryUtilization() { return 0.0; }
 // TODO: Read and return the system uptime
 long LinuxParser::UpTime() {
     auto res = extract_p(string{"/proc//uptime"}, string{"(.*)\\s+.*"});
-    return (res.size()) ? stol(res[0]) : 1;
+    return (res.size()) ? stol(res[0]) : 0;
 }
 
 // TODO: Read and return the number of jiffies for the system
