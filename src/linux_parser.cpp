@@ -145,16 +145,36 @@ string LinuxParser::User(int pid) {
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::UpTime(int pid) {
     // if file does not exist return -1?
-
+    /*
     // get the latest from /proc/{PID}/stat column #22
     auto res = extract_p( string{"/proc/"+to_string(pid)+"/stat"},
-           string{"[\\d+\\s+]{21}(\\d+)\\s+.*"} );
+           string{"\\-?\\d+\\s+\\(\\w+\\)\\s+\\w+\\s+[\\-?\\d+\\s+]{18}(\\d+)\\s+.*"} );
     if(res.size()){
         char* ends;
         return strtol(res[0].c_str(), &ends, 10)  /  sysconf(_SC_CLK_TCK);
     }
+   */
+    string line;
+    string value;
+    std::ifstream filestream(kProcDirectory + "/" + std::to_string(pid) +
+                             kStatFilename);
+    if (filestream.is_open()) {
+        while (std::getline(filestream, line)) {
+            std::istringstream linestream(line);
+            for (int i = 1; i <= 22; i++) {
+                linestream >> value;
+                if (i == 22) {
+                    try {
+                         return std::stol(value) / sysconf(_SC_CLK_TCK);
 
-    return 0.1234;
+                    } catch (const std::invalid_argument &arg) {
+                        return 0;
+                    }
+                }
+            }
+        }
+    }
+    return 0;
 }
 
 /*

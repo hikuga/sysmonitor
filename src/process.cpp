@@ -104,7 +104,7 @@ string Process::Command() {
 string Process::Ram() {
     auto res = LinuxParser::extract_p( string{"/proc/"+to_string(pid_)+"/status"}, string{"VmSize:\\s+(\\d+)\\s+.*"});
     if(res.size())
-        return res[0];
+        return to_string(stol(res[0]) / 1024);
     return string("0"); }
 
 // TODO: Return the user (name) that generated this process
