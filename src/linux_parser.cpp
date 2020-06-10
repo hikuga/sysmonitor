@@ -43,15 +43,15 @@ string LinuxParser::OperatingSystem() {
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::Kernel() {
-  string os, kernel;
+  string os, kernel, version;
   string line;
   std::ifstream stream(kProcDirectory + kVersionFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    linestream >> os >> kernel;
+    linestream >> os >> kernel >> version;
   }
-  return kernel;
+  return version;
 }
 vector<int> LinuxParser::Pids2() {
     vector<int> pids;
@@ -76,8 +76,24 @@ float LinuxParser::MemoryUtilization() { return 0.0; }
 
 // TODO: Read and return the system uptime
 long LinuxParser::UpTime() {
-    auto res = extract_p(string{"/proc/uptime"}, string{"(.*)\\s+.*"});
-    return (res.size()) ? stol(res[0]) : 0;
+    string line;
+    string wholeTime;
+    std::ifstream filestream(kProcDirectory + kUptimeFilename);
+    if (filestream.is_open()) {
+        while (std::getline(filestream, line)) {
+            std::istringstream linestream(line);
+            while (linestream >> wholeTime) {
+                try {
+                    return std::stol(wholeTime);
+                } catch (const std::invalid_argument& arg) {
+                    return 0;
+                }
+            }
+        }
+    }
+    return 0;
+    //auto res = extract_p(string{"/proc/uptime"}, string{"(.*)\\s+.*"});
+    //return (res.size()) ? stol(res[0])  : 0;
 }
 
 // TODO: Read and return the number of jiffies for the system
@@ -99,13 +115,13 @@ vector<string> LinuxParser::CpuUtilization() { return {}; }
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
     auto res_running =  extract_p( std::string{kProcDirectory+kStatFilename}, std::string{"processes\\s+(\\d+).*"});
-    return (res_running.size() > 0) ? stoi(res_running[0]) : -100;
+    return (res_running.size() > 0) ? stoi(res_running[0]) : 0;
 }
 
 // TODO: Read and return the number of running processes
 int LinuxParser::RunningProcesses() {
     auto res_running =  extract_p( std::string{kProcDirectory+kStatFilename}, std::string{"procs_running\\s+(\\d+).*"});
-    return (res_running.size() > 0) ? stoi(res_running[0]) : -100;
+    return (res_running.size() > 0) ? stoi(res_running[0]) : 0;
 }
 
 // TODO: Read and return the command associated with a process
@@ -159,20 +175,22 @@ long LinuxParser::UpTime(int pid) {
     std::ifstream filestream(kProcDirectory + "/" + std::to_string(pid) +
                              kStatFilename);
     if (filestream.is_open()) {
-        while (std::getline(filestream, line)) {
-            std::istringstream linestream(line);
-            for (int i = 1; i <= 22; i++) {
+        std::getline(filestream, line);
+        std::istringstream linestream(line);
+
+
+        for (int i = 1; i <= 22; i++) {
                 linestream >> value;
                 if (i == 22) {
                     try {
-                         return std::stol(value) / sysconf(_SC_CLK_TCK);
+                         return UpTime() - std::stol(value)/sysconf(_SC_CLK_TCK) ;
 
                     } catch (const std::invalid_argument &arg) {
                         return 0;
                     }
                 }
-            }
         }
+
     }
     return 0;
 }

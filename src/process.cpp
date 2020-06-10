@@ -47,7 +47,7 @@ float Process::CpuUtilization() const {
                 linestream >> value;
                 if (i == kUtime_ || i == kStime_ || i == kCutime_ || i == kCstime_ ||
                     i == kStarttime_) {
-                    time = std::stof(value) / sysconf(_SC_CLK_TCK);
+                    time = std::stof(value); // / sysconf(_SC_CLK_TCK);
                     cpuValues.push_back(time);
                 }
             }
@@ -61,7 +61,7 @@ float Process::CpuUtilization() const {
         float starttime = cpuValues[4];
         float total_time = utime + stime + cutime + cstime;
         float Hertz = sysconf(_SC_CLK_TCK);
-        float seconds = uptime - (starttime / Hertz);
+        float seconds = float(uptime); // - (starttime / Hertz);
         return  ((total_time / Hertz) / seconds);
     }
     return 0.0;

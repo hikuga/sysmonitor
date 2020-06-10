@@ -60,6 +60,6 @@ float Processor::MemUsage() {
     if( mem_total.size() && mem_free.size() )
         return 1.0 - strtof(mem_free[0].c_str(), &endS) / strtof(mem_total[0].c_str(), &endS);
 
-    return 0.12345;
+    return 0.0;
 
 }
